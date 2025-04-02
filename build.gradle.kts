@@ -8,7 +8,6 @@ plugins {
     id("idea")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
     id("org.jetbrains.intellij.platform") version "2.1.0"
-    id("jacoco")
     `jacoco-report-aggregation`
     jacoco
 }
@@ -62,10 +61,20 @@ intellijPlatform {
     }
     pluginVerification {
         // ...
+
     }
 }
 
 tasks {
+
+    withType<JavaCompile>().configureEach {
+        options.release.set(17)
+    }
+
+    withType<KotlinCompile>().configureEach {
+        compilerOptions.jvmTarget = JVM_17
+    }
+
     providers.gradleProperty("javaVersion").map {
         withType<JavaCompile> {
             sourceCompatibility = it
@@ -94,23 +103,41 @@ tasks {
         finalizedBy("jacocoTestReport") // report is always generated after tests run
     }
 
+    withType<Test> {
+        configure<JacocoTaskExtension> {
+            isIncludeNoLocationClasses = true
+            excludes = listOf("jdk.internal.*")
+        }
+    }
+
+    jacocoTestReport {
+        classDirectories.setFrom(instrumentCode)
+    }
+
     jacocoTestCoverageVerification {
+        classDirectories.setFrom(instrumentCode)
         violationRules {
-            rule { limit { minimum = BigDecimal.valueOf(0.9) } }
+            rule {
+                limit {
+                    counter = "LINE"
+                    value = "COVEREDRATIO"
+                    minimum = BigDecimal.valueOf(0.9)
+                }
+            }
+        }
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.required = false
+            csv.required = false
+            html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
         }
     }
 
     check {
         dependsOn(jacocoTestCoverageVerification)
     }
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    options.release.set(17)
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions.jvmTarget = JVM_17
 }
 
 java {
