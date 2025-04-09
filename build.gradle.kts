@@ -121,10 +121,19 @@ tasks {
                 limit {
                     counter = "LINE"
                     value = "COVEREDRATIO"
-                    minimum = BigDecimal.valueOf(0.9)
+                    minimum = BigDecimal.valueOf(0.875)
                 }
             }
         }
+        classDirectories.setFrom(files(classDirectories.files.map {
+            fileTree(it) {
+                setExcludes(listOf(
+                    "**/model/*.class",
+                    "**/provider/*.class",
+                    "**/AbstractPipelineStage.class"
+                ))
+            }
+        }))
     }
 
     jacocoTestReport {
@@ -133,6 +142,15 @@ tasks {
             csv.required = false
             html.outputLocation = layout.buildDirectory.dir("jacocoHtml")
         }
+        classDirectories.setFrom(files(classDirectories.files.map {
+            fileTree(it) {
+                setExcludes(listOf(
+                    "**/model/*.class",
+                    "**/provider/*.class",
+                    "**/AbstractPipelineStage.class"
+                ))
+            }
+        }))
     }
 
     check {

@@ -15,7 +15,7 @@ import static com.amtgard.buildertraitscompletions.util.PsiPatternMatchersUtil.i
 import static com.amtgard.buildertraitscompletions.util.PsiPatternMatchersUtil.methodRefHasClassRefFirstChild;
 
 public class ToBuilderPattern implements IMatcherChainLink {
-    private static final String TO_BUILDER = "toBuilder";
+    static final String TO_BUILDER = "toBuilder";
 
     @Override
     public Boolish match(CompletionParameters parameters) {
@@ -46,10 +46,5 @@ public class ToBuilderPattern implements IMatcherChainLink {
             return ((Optional) match).map(v -> ((VariableImpl)v).getGlobalType().toString());
         }
         return Optional.empty();
-/*
-        return identifierMatchesBuilderPattern(identifier, TO_BUILDER)
-            .truthy(m -> methodRefHasClassRefFirstChild(m, VariableImpl.class))
-            .map(v -> ((VariableImpl)v).getGlobalType().toString());
- */
     }
 }

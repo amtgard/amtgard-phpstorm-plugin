@@ -1,4 +1,5 @@
-import com.amtgard.buildertraitscompletions.util.Boolish;
+package com.amtgard.buildertraitscompletions.util;
+
 import lombok.Builder;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;

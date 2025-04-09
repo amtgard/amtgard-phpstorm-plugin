@@ -37,9 +37,9 @@ public class PsiPatternMatchersUtil {
         while (methodRef.getFirstChild() instanceof MethodReferenceImpl) {
             methodRef = (MethodReferenceImpl) methodRef.getFirstChild();
         }
-        PsiElement desc = (PsiElement) findDescendantOfClass(methodRef, targetClass).get();
-        if (Optional.ofNullable(desc).isPresent() && targetClass.isInstance(desc)) {
-            return Optional.of(desc);
+        Optional optionalDesc = findDescendantOfClass(methodRef, targetClass);
+        if (optionalDesc.isPresent() && targetClass.isInstance(optionalDesc.get())) {
+            return optionalDesc;
         }
         return Optional.empty();
     }

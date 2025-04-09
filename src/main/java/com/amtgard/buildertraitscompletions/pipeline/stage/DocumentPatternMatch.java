@@ -7,6 +7,7 @@ import com.amtgard.buildertraitscompletions.chainmatcher.matcher.ToBuilderPatter
 import com.amtgard.buildertraitscompletions.model.FqnString;
 import com.amtgard.buildertraitscompletions.model.StageContext;
 import com.amtgard.buildertraitscompletions.pipeline.AbstractPipelineStage;
+import com.amtgard.buildertraitscompletions.provider.DocumentPatternMatcherProvider;
 import com.amtgard.buildertraitscompletions.util.Boolish;
 import com.google.common.collect.ImmutableList;
 
@@ -14,15 +15,9 @@ import java.util.List;
 
 public class DocumentPatternMatch extends AbstractPipelineStage {
 
-    static List<IMatcherChainLink> matcherChain = ImmutableList.of(
-        new StaticBuilderPattern(),
-        new ToBuilderPattern(),
-        new GetterSetterPattern()
-    );
-
     @Override
     public Boolish execute(StageContext context) {
-        for (IMatcherChainLink link : matcherChain) {
+        for (IMatcherChainLink link : DocumentPatternMatcherProvider.provideMatcherChain()) {
             try {
                 Boolish<FqnString> match = link.match(context.getParameters());
                 if (match.truthy()) {

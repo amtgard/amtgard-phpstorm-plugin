@@ -5,6 +5,9 @@ build/
 !**/src/test/**/build/
 .codiumai/
 .local/
+gradle/
+lib/
+release
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
