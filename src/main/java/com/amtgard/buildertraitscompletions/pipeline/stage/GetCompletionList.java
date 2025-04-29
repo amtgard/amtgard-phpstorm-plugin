@@ -5,6 +5,7 @@ import com.amtgard.buildertraitscompletions.pipeline.AbstractPipelineStage;
 import com.amtgard.buildertraitscompletions.util.AmtgardBuilderUtil;
 import com.amtgard.buildertraitscompletions.util.Boolish;
 import com.amtgard.buildertraitscompletions.util.BuilderMode;
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.lang3.StringUtils;
 
 public class GetCompletionList extends AbstractPipelineStage {
@@ -21,7 +22,8 @@ public class GetCompletionList extends AbstractPipelineStage {
         return Boolish.maybe(context);
     }
 
-    private void appendBuilderCompletions(StageContext context) {
+    @VisibleForTesting
+    protected void appendBuilderCompletions(StageContext context) {
         if (context.getMode().equals(BuilderMode.BUILDER_MODE)) {
             if (AmtgardBuilderUtil.hasAmtgardBuilderTrait(context.getProject(), context.getFqnString().getFqn())) {
                 for (String builderTrait : AmtgardBuilderUtil.getClassFieldList(context.getProject(), context.getFqnString())) {
@@ -32,7 +34,8 @@ public class GetCompletionList extends AbstractPipelineStage {
         }
     }
 
-    private void appendGetterCompletions(StageContext context) {
+    @VisibleForTesting
+    protected void appendGetterCompletions(StageContext context) {
         if (context.getMode().equals(BuilderMode.GETTER_SETTER_MODE)) {
             if (AmtgardBuilderUtil.hasAmtgardBuilderGetterTrait(context.getProject(), context.getFqnString().getFqn())) {
                 for (String builderTrait : AmtgardBuilderUtil.getClassFieldList(context.getProject(), context.getFqnString())) {
@@ -42,7 +45,8 @@ public class GetCompletionList extends AbstractPipelineStage {
         }
     }
 
-    private void appendSetterCompletions(StageContext context) {
+    @VisibleForTesting
+    protected void appendSetterCompletions(StageContext context) {
         if (context.getMode().equals(BuilderMode.GETTER_SETTER_MODE)) {
             if (AmtgardBuilderUtil.hasAmtgardBuilderSetterTrait(context.getProject(), context.getFqnString().getFqn())) {
                 for (String builderTrait : AmtgardBuilderUtil.getClassFieldList(context.getProject(), context.getFqnString())) {

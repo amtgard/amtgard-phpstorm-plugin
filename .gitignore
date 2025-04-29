@@ -8,6 +8,7 @@ build/
 gradle/
 lib/
 release
+gradle.*
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
