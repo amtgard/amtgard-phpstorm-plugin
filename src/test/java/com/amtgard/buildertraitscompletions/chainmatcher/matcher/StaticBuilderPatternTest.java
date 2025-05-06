@@ -24,6 +24,7 @@ import static com.amtgard.buildertraitscompletions.chainmatcher.matcher.StaticBu
 import static com.amtgard.buildertraitscompletions.util.BuilderMode.BUILDER_MODE;
 import static com.amtgard.buildertraitscompletions.util.BuilderMode.GETTER_SETTER_MODE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -64,10 +65,24 @@ public class StaticBuilderPatternTest {
             .thenReturn(identifierMatches);
         when(identifierMatches.truthy(any())).thenReturn(Optional.of(classReference));
         when(classReference.getFQN()).thenReturn("Penguin\\Penguin");
+
         assertEquals("Penguin\\Penguin", StaticBuilderPattern.matchStaticBuilderPattern(identifier).get());
 
         when(identifierMatches.truthy(any())).thenReturn(null);
         assertEquals(Optional.empty(), StaticBuilderPattern.matchStaticBuilderPattern(identifier));
+    }
+
+    @Test
+    public void whenMatchNotPresent_thenFalsey() {
+        psiPatternMatchersUtilMockedStatic.when(() -> PsiPatternMatchersUtil.identifierMatchesBuilderPattern(identifier, BUILDER))
+            .thenReturn(identifierMatches);
+        when(identifierMatches.truthy(any())).thenReturn(null);
+
+        when(completionParameters.getPosition()).thenReturn(identifier);
+        when(identifier.getPrevSibling()).thenReturn(identifier);
+
+        StaticBuilderPattern staticBuilderPattern = new StaticBuilderPattern();
+        assertFalse(staticBuilderPattern.match(completionParameters).truthy());
     }
 
     @Test
@@ -76,8 +91,10 @@ public class StaticBuilderPatternTest {
             .thenReturn(identifierMatches);
         when(identifierMatches.truthy(any())).thenReturn(Optional.of(classReference));
         when(classReference.getFQN()).thenReturn("Penguin\\Penguin");
+
         when(completionParameters.getPosition()).thenReturn(identifier);
         when(identifier.getPrevSibling()).thenReturn(identifier);
+
         StaticBuilderPattern staticBuilderPattern = new StaticBuilderPattern();
         assertEquals("Penguin\\Penguin", ((FqnString)staticBuilderPattern.match(completionParameters).get()).getFqn());
     }

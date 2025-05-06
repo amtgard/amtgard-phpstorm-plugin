@@ -121,7 +121,7 @@ tasks {
                 limit {
                     counter = "LINE"
                     value = "COVEREDRATIO"
-                    minimum = BigDecimal.valueOf(0.875)
+                    minimum = BigDecimal.valueOf(0.905)
                 }
             }
         }
@@ -130,7 +130,8 @@ tasks {
                 setExcludes(listOf(
                     "**/model/*.class",
                     "**/provider/*.class",
-                    "**/AbstractPipelineStage.class"
+                    "**/pipeline/AbstractPipelineStage.class",
+                    "**/PhpMethodCompletionContributor.class"
                 ))
             }
         }))

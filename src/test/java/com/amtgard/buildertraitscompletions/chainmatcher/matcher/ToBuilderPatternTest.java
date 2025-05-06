@@ -18,9 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static com.amtgard.buildertraitscompletions.chainmatcher.matcher.StaticBuilderPattern.BUILDER;
 import static com.amtgard.buildertraitscompletions.chainmatcher.matcher.ToBuilderPattern.TO_BUILDER;
 import static com.amtgard.buildertraitscompletions.util.BuilderMode.BUILDER_MODE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -73,6 +75,18 @@ public class ToBuilderPatternTest {
     }
 
     @Test
+    public void whenMatchNotPresent_thenFalsey() {
+        psiPatternMatchersUtilMockedStatic.when(() -> PsiPatternMatchersUtil.identifierMatchesBuilderPattern(identifier, TO_BUILDER))
+            .thenReturn(identifierMatches);
+        when(identifierMatches.truthy(any())).thenReturn(null);
+        when(completionParameters.getPosition()).thenReturn(identifier);
+        when(identifier.getPrevSibling()).thenReturn(identifier);
+
+        ToBuilderPattern toBuilderPattern = new ToBuilderPattern();
+        assertFalse(toBuilderPattern.match(completionParameters).truthy());
+    }
+
+    @Test
     public void testMatch() {
         psiPatternMatchersUtilMockedStatic.when(() -> PsiPatternMatchersUtil.identifierMatchesBuilderPattern(identifier, TO_BUILDER))
             .thenReturn(identifierMatches);
@@ -81,6 +95,7 @@ public class ToBuilderPatternTest {
         when(phpType.toString()).thenReturn("Penguin\\Penguin");
         when(completionParameters.getPosition()).thenReturn(identifier);
         when(identifier.getPrevSibling()).thenReturn(identifier);
+
         ToBuilderPattern toBuilderPattern = new ToBuilderPattern();
         assertEquals("Penguin\\Penguin", ((FqnString)toBuilderPattern.match(completionParameters).get()).getFqn());
     }}

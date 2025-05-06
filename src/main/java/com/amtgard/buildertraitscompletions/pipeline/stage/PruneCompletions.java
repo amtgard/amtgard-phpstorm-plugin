@@ -15,15 +15,10 @@ public class PruneCompletions extends AbstractPipelineStage {
 
     @Override
     public Boolish execute(StageContext context) {
-        try {
-            PsiElement prevSibling = context.getParameters().getPosition().getPrevSibling();
-            PsiElement ancestor = findProgenitorMethodRefImpl(prevSibling);
-            List<String> identifiers = findChildPsiElementIdentifiers(ancestor);
-            context.setCompletions(context.getCompletions().stream().filter(cs -> !identifiers.contains(cs.getRoot())).collect(Collectors.toList()));
-            return Boolish.maybe(context);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return Boolish.maybe(context);
-        }
+        PsiElement prevSibling = context.getParameters().getPosition().getPrevSibling();
+        PsiElement ancestor = findProgenitorMethodRefImpl(prevSibling);
+        List<String> identifiers = findChildPsiElementIdentifiers(ancestor);
+        context.setCompletions(context.getCompletions().stream().filter(cs -> !identifiers.contains(cs.getRoot())).collect(Collectors.toList()));
+        return Boolish.maybe(context);
     }
 }
